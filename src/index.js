@@ -1,8 +1,14 @@
 require('dotenv').config();
-const setupServer = require('./server');
-const initMongoConnection = require('./db/initMongoConnection');
+const app = require('./server');
+const connectDB = require('./db/initMongoConnection');
 
-(async () => {
-  await initMongoConnection();
-  setupServer();
-})();
+const PORT = process.env.PORT || 3000;
+
+const startServer = async () => {
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+};
+
+startServer();

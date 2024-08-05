@@ -1,28 +1,19 @@
 const express = require('express');
+const morgan = require('morgan');
 const cors = require('cors');
-const pinoHttp = require('pino-http')();
-const {
-  getAllContacts,
-  getContactById,
-} = require('./controllers/contactsController');
+const contactsRouter = require('./routers/contacts');
+const errorHandler = require('./middlewares/errorHandler');
+const notFoundHandler = require('./middlewares/notFoundHandler');
 
-function setupServer() {
-  const app = express();
+const app = express();
 
-  app.use(cors());
-  app.use(pinoHttp);
+app.use(morgan('dev'));
+app.use(cors());
+app.use(express.json());
 
-  app.get('/contacts', getAllContacts);
-  app.get('/contacts/:contactId', getContactById);
+app.use('/contacts', contactsRouter);
 
-  app.use((req, res, next) => {
-    res.status(404).json({ message: 'Not found' });
-  });
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
-
-module.exports = setupServer;
+module.exports = app;
