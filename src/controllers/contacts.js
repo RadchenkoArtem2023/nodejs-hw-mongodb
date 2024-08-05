@@ -1,4 +1,3 @@
-// src/controllers/contacts.js
 const contactsService = require('../services/contacts');
 const createError = require('http-errors');
 

@@ -1,4 +1,3 @@
-// src/services/contacts.js
 const Contact = require('../models/contact');
 
 const getAll = async () => {
