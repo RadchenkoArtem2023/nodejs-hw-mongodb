@@ -1,13 +1,50 @@
 const contactsService = require('../services/contacts');
 const createError = require('http-errors');
+const Contact = require('../models/contact');
+const ctrlWrapper = require('../utils/ctrlWrapper');
 
-const getAllContacts = async (req, res, next) => {
-  try {
-    const contacts = await contactsService.getAll();
-    res.status(200).json({ status: 200, data: contacts });
-  } catch (error) {
-    next(error);
-  }
+//const getAllContacts = async (req, res, next) => {
+//  try {
+//    const contacts = await contactsService.getAll();
+//    res.status(200).json({ status: 200, data: contacts });
+//  } catch (error) {
+//    next(error);
+//  }
+//};
+
+const getAllContacts = async (req, res) => {
+  const {
+    page = 1,
+    perPage = 10,
+    sortBy = 'name',
+    sortOrder = 'asc',
+    ...filter
+  } = req.query;
+  const skip = (page - 1) * perPage;
+
+  const totalItems = await Contact.countDocuments(filter);
+  const contacts = await Contact.find(filter)
+    .sort({ [sortBy]: sortOrder })
+    .skip(skip)
+    .limit(parseInt(perPage));
+
+  const totalPages = Math.ceil(totalItems / perPage);
+  const hasPreviousPage = page > 1;
+  const hasNextPage = page < totalPages;
+
+  res.json({
+    status: 200,
+    message: 'Successfully found contacts!',
+    data: {
+      data: contacts,
+      page: parseInt(page),
+      perPage: parseInt(perPage),
+      totalItems,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage,
+    },
+  });
 };
 
 const getContactById = async (req, res, next) => {
@@ -69,7 +106,7 @@ const deleteContact = async (req, res, next) => {
 };
 
 module.exports = {
-  getAllContacts,
+  getAllContacts: ctrlWrapper(getAllContacts),
   getContactById,
   createContact,
   updateContact,
