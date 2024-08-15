@@ -1,11 +1,18 @@
 const Joi = require('joi');
 
 const contactSchema = Joi.object({
-  name: Joi.string().min(3).max(20).required(),
-  phoneNumber: Joi.string().min(3).max(20).required(),
-  email: Joi.string().email(),
-  isFavourite: Joi.boolean(),
-  contactType: Joi.string().min(3).max(20).required(),
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string().required(),
 });
 
-module.exports = { contactSchema };
+const updateContactSchema = Joi.object({
+  name: Joi.string(),
+  email: Joi.string().email(),
+  phone: Joi.string(),
+}).or('name', 'email', 'phone');
+
+module.exports = {
+  contactSchema,
+  updateContactSchema,
+};

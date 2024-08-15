@@ -3,15 +3,6 @@ const createError = require('http-errors');
 const Contact = require('../models/contact');
 const ctrlWrapper = require('../utils/ctrlWrapper');
 
-//const getAllContacts = async (req, res, next) => {
-//  try {
-//    const contacts = await contactsService.getAll();
-//    res.status(200).json({ status: 200, data: contacts });
-//  } catch (error) {
-//    next(error);
-//  }
-//};
-
 const getAllContacts = async (req, res) => {
   const {
     page = 1,
