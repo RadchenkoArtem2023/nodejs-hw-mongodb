@@ -5,6 +5,7 @@ const { ctrlWrapper } = require('../middlewares');
 const validateBody = require('../middlewares/validateBody');
 const isValidId = require('../middlewares/isValidId');
 const { contactSchema } = require('../validation/contacts');
+const { contactUpdateSchema } = require('../validation/contacts');
 const ctrl = require('../controllers/contacts');
 
 router.get('/', contactsController.getAllContacts);
@@ -14,7 +15,7 @@ router.post('/', validateBody(contactSchema), ctrlWrapper(ctrl.addContact));
 router.patch(
   '/:contactId',
   isValidId,
-  validateBody(contactSchema),
+  validateBody(contactUpdateSchema),
   ctrlWrapper(ctrl.updateContact),
 );
 
