@@ -4,19 +4,41 @@ const contactsController = require('../controllers/contacts');
 const { ctrlWrapper } = require('../middlewares');
 const validateBody = require('../middlewares/validateBody');
 const isValidId = require('../middlewares/isValidId');
-const { contactSchema } = require('../validation/contacts');
-const { contactUpdateSchema } = require('../validation/contacts');
-const ctrl = require('../controllers/contacts');
+const {
+  contactSchema,
+  contactUpdateSchema,
+} = require('../validation/contacts');
 
-router.get('/', contactsController.getAllContacts);
-router.get('/:contactId', contactsController.getContactById);
-router.delete('/:contactId', contactsController.deleteContact);
-router.post('/', validateBody(contactSchema), ctrlWrapper(ctrl.addContact));
+// GET all contacts
+router.get('/', ctrlWrapper(contactsController.getAllContacts));
+
+// GET a contact by ID
+router.get(
+  '/:contactId',
+  isValidId,
+  ctrlWrapper(contactsController.getContactById),
+);
+
+// POST a new contact
+router.post(
+  '/',
+  validateBody(contactSchema),
+  ctrlWrapper(contactsController.addContact),
+);
+
+// DELETE a contact by ID
+router.delete(
+  '/:contactId',
+  isValidId,
+  ctrlWrapper(contactsController.deleteContact),
+);
+
+// PATCH update a contact by ID
 router.patch(
   '/:contactId',
   isValidId,
   validateBody(contactUpdateSchema),
-  ctrlWrapper(ctrl.updateContact),
+  ctrlWrapper(contactsController.updateContact),
 );
 
 module.exports = router;
