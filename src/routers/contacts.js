@@ -6,7 +6,7 @@ const validateBody = require('../middlewares/validateBody');
 const isValidId = require('../middlewares/isValidId');
 const {
   contactSchema,
-  contactUpdateSchema,
+  updateContactSchema,
 } = require('../validation/contacts');
 
 // GET all contacts
@@ -23,7 +23,7 @@ router.get(
 router.post(
   '/',
   validateBody(contactSchema),
-  ctrlWrapper(contactsController.addContact),
+  ctrlWrapper(contactsController.createContact),
 );
 
 // DELETE a contact by ID
@@ -37,7 +37,7 @@ router.delete(
 router.patch(
   '/:contactId',
   isValidId,
-  validateBody(contactUpdateSchema),
+  validateBody(updateContactSchema),
   ctrlWrapper(contactsController.updateContact),
 );
 
