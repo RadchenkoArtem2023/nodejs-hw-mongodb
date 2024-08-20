@@ -68,7 +68,7 @@ const refreshSession = async (req, res, next) => {
       throw createHttpError(401, 'Refresh token expired');
     }
 
-    // Create a new session and delete the old one
+    // Створіть новий сеанс та видаліть старий
     await Session.deleteOne({ _id: session._id });
     const newSession = await createSession(session.userId);
 

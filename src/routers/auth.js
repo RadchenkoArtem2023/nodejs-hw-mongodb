@@ -21,7 +21,7 @@ router.post(
 
 router.post('/login', validateBodyAuth(userLoginSchema), ctrlWrapper(login));
 
-router.post('/refresh', refreshSession);
+router.post('/refresh', ctrlWrapper(refreshSession));
 
 router.post('/logout', logout);
 

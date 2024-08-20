@@ -9,6 +9,10 @@ const authRouter = require('./routers/auth');
 
 const app = express();
 
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
