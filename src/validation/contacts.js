@@ -38,6 +38,7 @@ const contactSchema = Joi.object({
       'any.required': 'Contact type is required!',
       'any.only': 'Contact type should be one of {#valids}!',
     }),
+  userId: Joi.forbidden(),
 });
 
 const updateContactSchema = Joi.object({
@@ -73,6 +74,7 @@ const updateContactSchema = Joi.object({
       'string.base': 'Contact type should be a string!',
       'any.only': 'Contact type should be one of {#valids}!',
     }),
+  userId: Joi.forbidden(),
 }).or('name', 'phoneNumber', 'email', 'isFavourite', 'contactType');
 
 module.exports = {

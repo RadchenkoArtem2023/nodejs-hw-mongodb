@@ -5,6 +5,8 @@ const contactsRouter = require('./routers/contacts');
 const errorHandler = require('./middlewares/errorHandler');
 const notFoundHandler = require('./middlewares/notFoundHandler');
 
+const authRouter = require('./routers/auth');
+
 const app = express();
 
 app.use(morgan('dev'));
@@ -12,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/contacts', contactsRouter);
+app.use('/auth', authRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

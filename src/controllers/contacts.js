@@ -53,15 +53,15 @@ const getContactById = async (req, res, next) => {
   });
 };
 
-const createContact = async (req, res, next) => {
-  const newContact = await contactsService.createContact(req.body);
+//const createContact = async (req, res, next) => {
+// const newContact = await contactsService.createContact(req.body);
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: newContact,
-  });
-};
+//  res.status(201).json({
+//    status: 201,
+//    message: 'Successfully created a contact!',
+//    data: newContact,
+//  });
+//};
 
 const updateContact = async (req, res, next) => {
   const { contactId } = req.params;
@@ -91,6 +91,29 @@ const deleteContact = async (req, res, next) => {
 
   res.status(204).send();
 };
+
+//////////////////////////////////////////////////////////
+
+const createContact = async (req, res, next) => {
+  try {
+    const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+    const contact = new Contact({
+      name,
+      phoneNumber,
+      email,
+      isFavourite,
+      contactType,
+      userId: req.user._id, // Adding userId from authenticated user
+    });
+
+    await contact.save();
+    res.status(201).json({ contact });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/////////////////////////////////////////////
 
 module.exports = {
   getAllContacts: ctrlWrapper(getAllContacts),

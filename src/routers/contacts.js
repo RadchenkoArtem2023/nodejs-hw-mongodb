@@ -9,6 +9,8 @@ const {
   updateContactSchema,
 } = require('../validation/contacts');
 
+const authenticate = require('../middlewares/authenticate');
+
 // GET all contacts
 router.get('/', ctrlWrapper(contactsController.getAllContacts));
 
@@ -40,5 +42,7 @@ router.patch(
   validateBody(updateContactSchema),
   ctrlWrapper(contactsController.updateContact),
 );
+
+router.use(authenticate);
 
 module.exports = router;
