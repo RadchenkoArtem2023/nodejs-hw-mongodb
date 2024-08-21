@@ -1,21 +1,35 @@
 const jwt = require('jsonwebtoken');
 const createHttpError = require('http-errors');
-const config = require('../config');
+const User = require('../models/user');
 
-const authenticate = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return next(createHttpError(401, 'Access token not provided'));
-  }
+const authenticate = async (req, res, next) => {
+  try {
+    console.log('Checking authorization header:', req.headers.authorization);
+    const { authorization = '' } = req.headers;
+    const [bearer, token] = authorization.split(' ');
 
-  const token = authHeader.split(' ')[1];
-  jwt.verify(token, config.jwtSecret, (err, decoded) => {
-    if (err) {
-      return next(createHttpError(401, 'Invalid token'));
+    if (bearer !== 'Bearer' || !token) {
+      throw createHttpError(401, 'Invalid token');
     }
-    req.user = decoded;
-    next();
-  });
-};
 
+    try {
+      const { userId } = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Decoded userId:', userId);
+      const user = await User.findById(userId);
+      console.log('Found user:', user);
+
+      if (!user) {
+        throw createHttpError(401, 'User not found');
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      console.error('Error verifying token:', error.message);
+      throw createHttpError(401, 'Invalid token');
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 module.exports = authenticate;

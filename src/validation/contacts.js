@@ -1,11 +1,11 @@
 const Joi = require('joi');
 
 const contactSchema = Joi.object({
-  name: Joi.string().min(3).max(20).required().messages({
-    'string.base': 'Name should be a string!',
-    'string.min': 'Name should be at least {#limit} characters long',
-    'string.max': 'Name should be at most {#limit} characters long',
+  name: Joi.string().min(3).max(50).required().messages({
     'any.required': 'Name is required!',
+    'string.empty': 'Name cannot be empty!',
+    'string.min': 'Name should have a minimum length of 3 characters',
+    'string.max': 'Name should have a maximum length of 50 characters',
   }),
   phoneNumber: Joi.alternatives()
     .try(

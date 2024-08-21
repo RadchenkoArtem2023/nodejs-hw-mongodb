@@ -93,22 +93,35 @@ const deleteContact = async (req, res, next) => {
 };
 
 //////////////////////////////////////////////////////////
-
 const createContact = async (req, res, next) => {
   try {
+    console.log('req.user:', req.user);
+
     const { name, phoneNumber, email, isFavourite, contactType } = req.body;
-    const contact = new Contact({
+    console.log('Received body:', req.body);
+
+    if (!name) {
+      throw createHttpError(400, 'Name is required!');
+    }
+
+    const contact = await Contact.create({
       name,
       phoneNumber,
       email,
       isFavourite,
       contactType,
-      userId: req.user._id, // Adding userId from authenticated user
+      userId: req.user._id,
     });
 
-    await contact.save();
-    res.status(201).json({ contact });
+    console.log('Created contact:', contact);
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Contact successfully created!',
+      data: contact,
+    });
   } catch (error) {
+    console.error('Error creating contact:', error);
     next(error);
   }
 };
