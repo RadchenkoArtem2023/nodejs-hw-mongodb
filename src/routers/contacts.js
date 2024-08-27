@@ -11,6 +11,8 @@ const {
 
 const authenticate = require('../middlewares/authenticate');
 
+const upload = require('../middlewares/upload');
+
 router.use(authenticate);
 
 // GET all contacts
@@ -26,6 +28,8 @@ router.get(
 // POST a new contact
 router.post(
   '/',
+  authenticate,
+  upload.single('photo'),
   validateBody(contactSchema),
   ctrlWrapper(contactsController.createContact),
 );
@@ -40,7 +44,9 @@ router.delete(
 // PATCH update a contact by ID
 router.patch(
   '/:contactId',
+  authenticate,
   isValidId,
+  upload.single('photo'),
   validateBody(updateContactSchema),
   ctrlWrapper(contactsController.updateContact),
 );
