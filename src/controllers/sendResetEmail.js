@@ -14,6 +14,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+transporter.verify((error, success) => {
+  if (error) {
+    console.log('SMTP connection error:', error);
+  } else {
+    console.log('SMTP server is ready to send emails');
+  }
+});
+
 const sendResetEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -24,10 +32,12 @@ const sendResetEmail = async (req, res, next) => {
     }
 
     // Перевірка, чи існує користувач з таким email
+    console.log('Searching for user with email:', email);
     const user = await User.findOne({ email });
     if (!user) {
       throw createHttpError(404, 'User not found!');
     }
+    console.log('User found:', user);
 
     // Генерація JWT токену для скидання пароля
     console.log('Генерація токену для:', user.email);
@@ -53,7 +63,7 @@ const sendResetEmail = async (req, res, next) => {
     res.status(200).json({
       status: 200,
       message: 'Reset password email has been successfully sent.',
-      data: { token },
+      data: {},
     });
   } catch (error) {
     if (
@@ -71,6 +81,22 @@ const sendResetEmail = async (req, res, next) => {
     }
   }
 };
+
+transporter.sendMail(
+  {
+    from: process.env.SMTP_FROM,
+    to: 'test@example.com', // замініть на свою адресу
+    subject: 'Test Email',
+    text: 'This is a test email',
+  },
+  (error, info) => {
+    if (error) {
+      console.log('Error sending test email:', error);
+    } else {
+      console.log('Test email sent:', info.response);
+    }
+  },
+);
 
 module.exports = {
   sendResetEmail: ctrlWrapper(sendResetEmail),
